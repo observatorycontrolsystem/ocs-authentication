@@ -42,7 +42,7 @@ def get_profile(access_token: str) -> Profile:
         raise ProfileException('Unable to access profile information')
 
 
-def generate_tokens(username: str, password: str) -> tuple[str, str]:
+def generate_tokens(username: str, password: str):
     token_response = requests.post(
         ocs_auth_settings.OAUTH_TOKEN_URL,
         data={
@@ -60,7 +60,7 @@ def generate_tokens(username: str, password: str) -> tuple[str, str]:
         raise OAuthTokenException('Failed to generate OAuth tokens')
 
 
-def refresh_access_token(refresh_token: str) -> tuple[str, str]:
+def refresh_access_token(refresh_token: str):
     token_response = requests.post(
         ocs_auth_settings.OAUTH_TOKEN_URL,
         data={
