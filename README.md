@@ -4,6 +4,10 @@ Authentication backends and utilities for the OCS.
 
 For the OCS, the authorization server is the Observation Portal.
 
+## Prerequisites
+
+- Python >= 3.7
+
 ## Installation and Getting Started
 
 To install the library into your Django application:
