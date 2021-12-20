@@ -36,6 +36,9 @@ class TestOauthUsernamePasswordAuth(TestCase):
             'profile': {
                 'staff_view': False,
             },
+            'tokens': {
+                'api_token': '1234'
+            },
             'is_staff': False
         }
         password = 'qwerty'
@@ -57,8 +60,6 @@ class TestOauthUsernamePasswordAuth(TestCase):
             profile_response = self.profile_response
         if token_response is None:
             token_response = self.token_response
-        self.assertEqual(user.authprofile.access_token, token_response['access_token'])
-        self.assertEqual(user.authprofile.refresh_token, token_response['refresh_token'])
         self.assertEqual(user.authprofile.staff_view, profile_response['profile']['staff_view'])
         self.assertEqual(user.is_staff, profile_response['is_staff'])
         self.assertEqual(user.first_name, profile_response['first_name'])

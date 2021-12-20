@@ -3,6 +3,7 @@ from dataclasses import dataclass
 import requests
 from django.db import transaction
 from django.contrib.auth import get_user_model
+from rest_framework.authtoken.models import Token
 
 from ocs_authentication.settings import ocs_auth_settings
 from ocs_authentication.auth_profile.models import AuthProfile
@@ -16,15 +17,17 @@ class Profile:
     last_name: str
     username: str
     email: str
+    api_token: str
     is_staff: bool
     is_superuser: bool
     staff_view: bool
 
 
 def get_profile(access_token: str) -> Profile:
+    headers = {'Authorization': f'Bearer {access_token}'}
     profile_response = requests.get(
         ocs_auth_settings.OAUTH_PROFILE_URL,
-        headers={'Authorization': f'Bearer {access_token}'},
+        headers=headers,
         timeout=ocs_auth_settings.REQUESTS_TIMEOUT_SECONDS
     )
     if profile_response.status_code == 200:
@@ -33,9 +36,9 @@ def get_profile(access_token: str) -> Profile:
             profile_response.json()['last_name'],
             profile_response.json()['username'],
             profile_response.json()['email'],
+            profile_response.json()['tokens']['api_token'],
             profile_response.json()['is_staff'],
-            # TODO: Get actual value of superuser
-            profile_response.json()['is_staff'],
+            profile_response.json()['is_superuser'],
             profile_response.json()['profile']['staff_view'],
         )
     else:
@@ -60,34 +63,7 @@ def generate_tokens(username: str, password: str):
         raise OAuthTokenException('Failed to generate OAuth tokens')
 
 
-def refresh_access_token(refresh_token: str):
-    token_response = requests.post(
-        ocs_auth_settings.OAUTH_TOKEN_URL,
-        data={
-            'grant_type': 'refresh_token',
-            'refresh_token': refresh_token,
-            'client_id': ocs_auth_settings.OAUTH_CLIENT_ID,
-            'client_secret': ocs_auth_settings.OAUTH_CLIENT_SECRET
-        },
-        timeout=ocs_auth_settings.REQUESTS_TIMEOUT_SECONDS
-    )
-    if token_response.status_code == 200:
-        return token_response.json()['access_token'], token_response.json()['refresh_token']
-    else:
-        raise OAuthTokenException('Failed to refresh OAuth tokens')
-
-
-def revoke_token():
-    # TODO: Implement revoking OAuth tokens. This can allow users to revoke a token is their access token
-    # is compromised. However, since access tokens are short lived, any compromised access tokens will not
-    # work for long, or will not work at all if it is already after the expiration date. If a refresh token
-    # is compromised, this is a larger security risk since the refresh token can be used to generate new access
-    # and refresh token pairs. However, we do not currently expose refresh tokens to the users.
-    # https://django-oauth-toolkit.readthedocs.io/en/latest/tutorial/tutorial_04.html#revoking-a-token
-    pass
-
-
-def create_or_update_user(profile: Profile, password: str, access_token: str, refresh_token: str):
+def create_or_update_user(profile: Profile, password: str):
     with transaction.atomic():
         user, _ = get_user_model().objects.update_or_create(
             username=profile.username,
@@ -99,14 +75,21 @@ def create_or_update_user(profile: Profile, password: str, access_token: str, re
                 'is_superuser': profile.is_superuser,
             }
         )
-        user.set_password(password)
+        if password:
+            user.set_password(password)
         user.save()
         AuthProfile.objects.update_or_create(
             user=user,
             defaults={
                 'staff_view': profile.staff_view,
-                'access_token': access_token,
-                'refresh_token': refresh_token
+                'api_token': profile.api_token
             }
         )
+        # TODO:: This could will update DRFs internal authtoken as well. Uncomment this when we are
+        #        ready to transition to a single api_token.
+        # token, _ = Token.objects.get_or_create(user=user)
+        # if profile.api_token != token.key:
+        #     # Need to set the api token to some expected value
+        #     token.delete()
+        #     Token.objects.create(user=user, key=profile.api_token)
         return user
