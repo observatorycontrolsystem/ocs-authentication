@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.validators import validate_email
 from django.contrib.auth.backends import ModelBackend, BaseBackend
 from django.core.exceptions import ValidationError, PermissionDenied
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from rest_framework.authentication import TokenAuthentication, exceptions
 from ocs_authentication.util import generate_tokens, get_profile, create_or_update_user
 from ocs_authentication.auth_profile.models import AuthProfile
