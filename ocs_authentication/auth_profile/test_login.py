@@ -39,7 +39,8 @@ class TestOauthUsernamePasswordAuth(TestCase):
             'tokens': {
                 'api_token': '1234'
             },
-            'is_staff': False
+            'is_staff': False,
+            'is_superuser': False
         }
         password = 'qwerty'
         self.token_response = {
