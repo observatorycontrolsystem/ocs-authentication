@@ -19,9 +19,9 @@ setup(
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
     ],
     install_requires=[
-        'django',
-        'djangorestframework',
-        'requests'
+        'django>=3.2,<4.0',
+        'djangorestframework>=3.12,<3.13',
+        'requests>=2.22,<2.27',
     ],
     extras_require={
         'tests': ['pytest']
