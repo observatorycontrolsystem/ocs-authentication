@@ -65,13 +65,13 @@ Note that if the you want to check the local DB for if the user exists there fir
 
 ### OCSTokenAuthentication Backend
 
-If the client application is using Django Rest Framework and should support api token authentication, switch out use of rest frameworks TokenAuthentication with this backend which performs TokenAuthentication on the authtoken and then falls back on the api_token within the AuthProfile model. It can be included by updating the following in the settings:
+If the client application is using Django REST Framework and should support API token authentication, switch out use of REST Framework's TokenAuthentication with this backend which performs TokenAuthentication on the authtoken and then falls back on the api_token within the AuthProfile model. It can be included by updating the following in the settings:
 
 ```python
 REST_FRAMEWORK = {
     ...
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        # Allows authentication against DRF authtoken and then Oauth Servers api_token
+        # Allows authentication against DRF authtoken and then Oauth Server's api_token
         'ocs_authentication.backends.OCSTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ),
@@ -81,15 +81,15 @@ REST_FRAMEWORK = {
 
 ### IsServer Permission
 
-This permission is used to allow the oauth server to call views within other applications, using its `OAUTH_SERVER_KEY`. This key should be kept private and only known by the applications and Oauth server. This permission should be included as the permission class on any view you want only accessible by the Oauth server.
+This permission is used to allow the OAuth server to call views within other applications, using its `OAUTH_SERVER_KEY`. This key should be kept private and only known by the applications and Oauth server. This permission should be included as the permission class on any view you want only accessible by the OAuth server.
 
 ### IsAdminOrReadOnly Permission
 
-This permission is used to specify that a user has read only access to the safe endpoints if unauthenticated (like `GET`), and must be an admin user (`is_staff=True`) to access writable endpoints (like `POST` or `PUT`). This should be added to individual viewset classes as needed.
+This permission is used to specify that a user has read-only access to the safe endpoints if unauthenticated (like `GET`), and must be an admin user (`is_staff=True`) to access writable endpoints (like `POST` or `PUT`). This should be added to individual viewset classes as needed.
 
 ### Views
 
-This view is used by client applications to allow the Oauth server application to update the API token of a user when that user revokes their token and generates a new one. This keeps the tokens in sync, so the user can use the same API token to authenticate any client application. To include this view in your client app, add this line to your `urlpatterns` in `urls.py`:
+This view is used by client applications to allow the OAuth server application to update the API token of a user when that user revokes their token and generates a new one. This keeps the tokens in sync, so the user can use the same API token to authenticate any client application. To include this view in your client app, add this line to your `urlpatterns` in `urls.py`:
 
 ```
 from django.conf.urls import url, include
@@ -98,7 +98,7 @@ import ocs_authentication.auth_profile.urls as authprofile_urls
 url(r'^authprofile/', include(authprofile_urls))
 ```
 
-You must also set the environment variable `OAUTH_CLIENT_APPS_BASE_URLS` in the Oauth Server, which will trigger the server to call the UpdateToken View on each of those urls whenever a user's token is revoked and replaced, and the AddUpdateUser View on each of those urls whenever a user model or profile is created or updated. This keeps the user account details and api_tokens synced up between applications.
+You must also set the environment variable `OAUTH_CLIENT_APPS_BASE_URLS` in the Oauth Server, which will trigger the server to call the UpdateToken View on each of those URLs whenever a user's token is revoked and replaced, and the AddUpdateUser View on each of those URLs whenever a user model or profile is created or updated. This keeps the user account details and api_tokens synced up between applications.
 
 ## Settings
 
