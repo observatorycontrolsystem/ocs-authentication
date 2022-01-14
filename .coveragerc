@@ -1,0 +1,10 @@
+[run]
+source = ocs_authentication
+
+[report]
+omit =
+    */migrations/*
+    */management/*
+    *settings.py
+    *wsgi.py
+    *apps.py
