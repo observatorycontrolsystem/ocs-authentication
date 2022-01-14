@@ -2,9 +2,36 @@ from django.contrib.auth import get_user_model
 from django.core.validators import validate_email
 from django.contrib.auth.backends import ModelBackend, BaseBackend
 from django.core.exceptions import ValidationError, PermissionDenied
-
+from django.utils.translation import gettext as _
+from rest_framework.authentication import TokenAuthentication, exceptions
 from ocs_authentication.util import generate_tokens, get_profile, create_or_update_user
+from ocs_authentication.auth_profile.models import AuthProfile
 from ocs_authentication.exceptions import ProfileException, OAuthTokenException
+
+
+class OCSTokenAuthentication(TokenAuthentication):
+    """
+    This Allows authentication based on the api_key stored in the AuthProfile model.
+    This should allow users to use the same api_key between client apps and the Oauth Server.
+    TODO:: Once we switch to just using the DRF tokens rather than allowing both DRF tokens and
+           the AuthProfile api_tokens, this backend should no longer be necessary.
+    """
+    def authenticate_credentials(self, key):
+        try:
+            output = super().authenticate_credentials(key)
+            return output
+        except exceptions.AuthenticationFailed:
+            pass
+        # Fallback on trying the api_token in the AuthToken model
+        try:
+            token = AuthProfile.objects.select_related('user').get(api_token=key)
+        except AuthProfile.DoesNotExist:
+            raise exceptions.AuthenticationFailed(_('Invalid token.'))
+
+        if not token.user.is_active:
+            raise exceptions.AuthenticationFailed(_('User inactive or deleted.'))
+
+        return (token.user, token)
 
 
 class OAuthUsernamePasswordBackend(ModelBackend):
@@ -23,12 +50,12 @@ class OAuthUsernamePasswordBackend(ModelBackend):
             return None
 
         try:
-            profile = get_profile(access_token)
+            profile = get_profile(access_token=access_token)
         except ProfileException:
             # Failed to get profile data using newly created access token. Something is wrong, indicate not authorized.
             raise PermissionDenied('Failed to access user profile')
 
-        return create_or_update_user(profile, password, access_token, refresh_token)
+        return create_or_update_user(profile, password)
 
     def get_user(self, user_id):
         try:
