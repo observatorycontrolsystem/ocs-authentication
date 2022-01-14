@@ -27,5 +27,5 @@ class IsServer(permissions.BasePermission):
 
         if key:
             return key == settings.OCS_AUTHENTICATION['OAUTH_SERVER_KEY']
-        
+
         return False

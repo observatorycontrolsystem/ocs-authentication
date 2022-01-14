@@ -1,11 +1,8 @@
 import json
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
 from rest_framework import status
-from django.contrib.auth import get_user_model
 
-from ocs_authentication.auth_profile.models import AuthProfile
 from ocs_authentication.permissions import IsServer
 from ocs_authentication.util import create_or_update_user, Profile
 
@@ -34,5 +31,5 @@ class AddUpdateUserView(APIView):
         # The password will not be set here since this only has the profile api info.
         # The password will only get set when logging in using username/password auth
         # which is forwarded through Oauth.
-        user = create_or_update_user(profile, password=None)
+        create_or_update_user(profile, password=None)
         return Response({'message': 'User account updated'}, status=status.HTTP_200_OK)

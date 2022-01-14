@@ -3,7 +3,6 @@ from dataclasses import dataclass
 import requests
 from django.db import transaction
 from django.contrib.auth import get_user_model
-from rest_framework.authtoken.models import Token
 
 from ocs_authentication.settings import ocs_auth_settings
 from ocs_authentication.auth_profile.models import AuthProfile
