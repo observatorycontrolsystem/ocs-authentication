@@ -1,5 +1,9 @@
 # OCS Authentication
 
+![Build](https://github.com/observatorycontrolsystem/ocs-authentication/workflows/Build/badge.svg)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/fbba450da5394be0bd626918bbc28788)](https://www.codacy.com/gh/observatorycontrolsystem/ocs-authentication/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=observatorycontrolsystem/ocs-authentication&amp;utm_campaign=Badge_Grade)
+[![Coverage Status](https://coveralls.io/repos/github/observatorycontrolsystem/ocs-authentication/badge.svg)](https://coveralls.io/github/observatorycontrolsystem/ocs-authentication)
+
 Authentication backends and utilities for the OCS.
 
 For the OCS, the authorization server is the Observation Portal.
