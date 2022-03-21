@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ocs-authentication"
-version = "0.2.0-alpha.0"
+version = "0.2.0"
 description = "Authentication backends and utilities for the OCS applications"
 authors = ["Observatory Control System Project <ocs@lco.global>"]
 license = "GPL-3.0-only"
