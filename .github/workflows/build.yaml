@@ -55,10 +55,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install poetry
     - name: Build package and publish to PyPI
-      env:
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.PYPI_OCS_AUTHENTICATION_API_TOKEN }}
       run: |
         poetry build -f wheel
         poetry build -f sdist
-        poetry publish -u "__token__" -p '${{ secrets.PYPI_OBS_PORTAL_API_TOKEN }}'
+        poetry publish -u "__token__" -p '${{ secrets.PYPI_OCS_AUTHENTICATION_API_TOKEN }}'
