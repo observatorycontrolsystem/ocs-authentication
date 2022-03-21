@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "ocs-authentication"
+version = "0.2.0-alpha.0"
+description = "Authentication backends and utilities for the OCS applications"
+authors = ["Observatory Control System Project <ocs@lco.global>"]
+license = "GPL-3.0-only"
+readme = "README.md"
+homepage = "https://github.com/observatorycontrolsystem/ocs-authentication"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+django = "^4"
+djangorestframework = "^3.13"
+requests = ">=2.22,<2.27"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1.0"
+coverage = "^6.3.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
