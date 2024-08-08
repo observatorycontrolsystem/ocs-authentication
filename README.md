@@ -10,7 +10,7 @@ For the OCS, the authorization server is the Observation Portal.
 
 ## Prerequisites
 
-- Python >= 3.7
+- Python >= 3.8
 
 ## Installation and Getting Started
 

@@ -3,10 +3,16 @@ from dataclasses import dataclass
 import requests
 from django.db import transaction
 from django.contrib.auth import get_user_model
+from rest_framework.throttling import BaseThrottle
 
 from ocs_authentication.settings import ocs_auth_settings
 from ocs_authentication.auth_profile.models import AuthProfile
 from ocs_authentication.exceptions import ProfileException, OAuthTokenException
+
+
+class NoThrottle(BaseThrottle):
+    def allow_request(self, request, view):
+        return True
 
 
 @dataclass

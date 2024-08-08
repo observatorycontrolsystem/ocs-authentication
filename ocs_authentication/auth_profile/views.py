@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from ocs_authentication.permissions import IsServer
-from ocs_authentication.util import create_or_update_user, Profile
+from ocs_authentication.util import create_or_update_user, Profile, NoThrottle
 
 
 class AddUpdateUserView(APIView):
@@ -15,6 +15,7 @@ class AddUpdateUserView(APIView):
     This should also be called on token change or on any user info change.
     """
     permission_classes = [IsServer]
+    throttle_classes = [NoThrottle]
 
     def post(self, request):
         data = json.loads(request.body.decode('utf-8'))
