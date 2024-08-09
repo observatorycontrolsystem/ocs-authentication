@@ -14,6 +14,7 @@ class AddUpdateUserView(APIView):
     can access this application with their api-token without needing to initially login with their password.
     This should also be called on token change or on any user info change.
     """
+    authentication_classes = []  # No auth class should basically bypass auth since this already has permissions
     permission_classes = [IsServer]
     throttle_classes = [NoThrottle]
 
