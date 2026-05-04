@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from ocs_authentication.permissions import IsServer
-from ocs_authentication.util import create_or_update_user, Profile
+from ocs_authentication.util import create_or_update_user, Profile, NoThrottle
 
 
 class AddUpdateUserView(APIView):
@@ -14,7 +14,9 @@ class AddUpdateUserView(APIView):
     can access this application with their api-token without needing to initially login with their password.
     This should also be called on token change or on any user info change.
     """
+    authentication_classes = []  # No auth class should basically bypass auth since this already has permissions
     permission_classes = [IsServer]
+    throttle_classes = [NoThrottle]
 
     def post(self, request):
         data = json.loads(request.body.decode('utf-8'))
